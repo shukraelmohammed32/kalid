@@ -9,6 +9,58 @@
 
 window.addEventListener('DOMContentLoaded', event => {
 
+    // Theme toggle with persisted preference
+    const themeToggle = document.querySelector('[data-theme-toggle]');
+    const themeLabel = themeToggle ? themeToggle.querySelector('span') : null;
+    const themeIcon = themeToggle ? themeToggle.querySelector('i') : null;
+
+    const getStoredTheme = function () {
+        try {
+            return window.localStorage.getItem('kalid-theme');
+        } catch (error) {
+            return null;
+        }
+    };
+
+    const setStoredTheme = function (theme) {
+        try {
+            window.localStorage.setItem('kalid-theme', theme);
+        } catch (error) {
+            // Ignore storage errors and continue with in-memory state.
+        }
+    };
+
+    const setTheme = function (theme) {
+        const isDark = theme === 'dark';
+        document.body.classList.toggle('dark-mode', isDark);
+        document.body.setAttribute('data-theme', isDark ? 'dark' : 'light');
+
+        if (themeToggle) {
+            themeToggle.setAttribute('aria-pressed', String(isDark));
+            themeToggle.setAttribute('aria-label', isDark ? 'Enable light mode' : 'Enable dark mode');
+        }
+
+        if (themeIcon) {
+            themeIcon.className = isDark ? 'bi bi-sun-fill' : 'bi bi-moon-stars-fill';
+        }
+
+        if (themeLabel) {
+            themeLabel.textContent = isDark ? 'Light Mode' : 'Dark Mode';
+        }
+    };
+
+    const savedTheme = getStoredTheme();
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    setTheme(savedTheme || (prefersDark ? 'dark' : 'light'));
+
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            const nextTheme = document.body.classList.contains('dark-mode') ? 'light' : 'dark';
+            setTheme(nextTheme);
+            setStoredTheme(nextTheme);
+        });
+    }
+
     // Navbar shrink function
     var navbarShrink = function () {
         const navbarCollapsible = document.body.querySelector('#mainNav');
@@ -45,15 +97,17 @@ window.addEventListener('DOMContentLoaded', event => {
     );
     responsiveNavItems.map(function (responsiveNavItem) {
         responsiveNavItem.addEventListener('click', () => {
-            if (window.getComputedStyle(navbarToggler).display !== 'none') {
+            if (navbarToggler && window.getComputedStyle(navbarToggler).display !== 'none') {
                 navbarToggler.click();
             }
         });
     });
 
     // Activate SimpleLightbox plugin for portfolio items
-    new SimpleLightbox({
-        elements: '#portfolio a.portfolio-box'
-    });
+    if (window.SimpleLightbox && document.querySelector('#portfolio a.portfolio-box')) {
+        new SimpleLightbox({
+            elements: '#portfolio a.portfolio-box'
+        });
+    }
 
 });
