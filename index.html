@@ -345,20 +345,20 @@
                         </div>
                     </div>
                     <div class="col-lg-7">
-                        <form class="contact-form" novalidate>
+                        <form class="contact-form" id="bookingForm" novalidate>
                             <div class="row gx-3 gy-3">
                                 <div class="col-md-6">
                                     <label for="name" class="form-label">Full Name</label>
-                                    <input class="form-control" id="name" type="text" placeholder="Your name" />
+                                    <input class="form-control" id="name" name="from_name" type="text" placeholder="Your name" required />
                                 </div>
                                 <div class="col-md-6">
                                     <label for="phone" class="form-label">Phone Number</label>
-                                    <input class="form-control" id="phone" type="tel" placeholder="09XXXXXXXX" />
+                                    <input class="form-control" id="phone" name="from_phone" type="tel" placeholder="09XXXXXXXX" required />
                                 </div>
                                 <div class="col-12">
                                     <label for="service" class="form-label">Service Needed</label>
-                                    <select class="form-select" id="service">
-                                        <option selected>Choose a service</option>
+                                    <select class="form-select" id="service" name="service">
+                                        <option value="" selected>Choose a service</option>
                                         <option>Haircut &amp; Styling</option>
                                         <option>Beard Sculpting</option>
                                         <option>Signature Package</option>
@@ -367,10 +367,19 @@
                                 </div>
                                 <div class="col-12">
                                     <label for="message" class="form-label">Message</label>
-                                    <textarea class="form-control" id="message" rows="5" placeholder="Preferred day and time"></textarea>
+                                    <textarea class="form-control" id="message" name="message" rows="5" placeholder="Preferred day and time"></textarea>
+                                </div>
+                                <div class="col-12">
+                                    <div id="formFeedback" class="form-feedback" aria-live="polite"></div>
                                 </div>
                                 <div class="col-12 d-grid">
-                                    <button class="btn btn-primary btn-xl" type="submit">Send Booking Request</button>
+                                    <button class="btn btn-primary btn-xl" id="submitBtn" type="submit">
+                                        <span class="btn-text">Send Booking Request</span>
+                                        <span class="btn-spinner d-none">
+                                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                            Sending…
+                                        </span>
+                                    </button>
                                 </div>
                             </div>
                         </form>
@@ -388,6 +397,7 @@
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/SimpleLightbox/2.1.0/simpleLightbox.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
         <script src="js/scripts.js"></script>
     </body>
 </html>
