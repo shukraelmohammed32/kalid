@@ -15,6 +15,22 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const port = Number(process.env.PORT || 3000);
 const sql = process.env.DATABASE_URL ? neon(process.env.DATABASE_URL) : null;
+const databaseReady = sql
+    ? Promise.all([
+        sql`
+            CREATE TABLE IF NOT EXISTS bookings (
+                id BIGSERIAL PRIMARY KEY,
+                customer_name VARCHAR(100) NOT NULL,
+                phone VARCHAR(30) NOT NULL,
+                service VARCHAR(100) NOT NULL,
+                message TEXT,
+                status VARCHAR(20) NOT NULL DEFAULT 'pending',
+                created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+            )
+        `,
+        sql`CREATE INDEX IF NOT EXISTS bookings_created_at_idx ON bookings (created_at DESC)`
+    ])
+    : Promise.resolve();
 const adminCookieName = 'kalid_admin_session';
 const adminSessionTtlMs = 8 * 60 * 60 * 1000;
 const allowedStatuses = new Set(['pending', 'confirmed', 'completed', 'cancelled']);
@@ -123,6 +139,7 @@ app.get('/api/health', async (_req, res) => {
     }
 
     try {
+        await databaseReady;
         await sql`SELECT 1`;
         return res.json({ ok: true });
     } catch (error) {
@@ -158,6 +175,7 @@ app.post('/api/bookings', async (req, res) => {
     }
 
     try {
+        await databaseReady;
         const [booking] = await sql`
             INSERT INTO bookings (customer_name, phone, service, message)
             VALUES (${name}, ${phone}, ${service}, ${message || null})
@@ -226,6 +244,7 @@ app.get('/api/admin/bookings', requireAdmin, async (_req, res) => {
     }
 
     try {
+        await databaseReady;
         const bookings = await sql`
             SELECT id, customer_name, phone, service, message, status, created_at
             FROM bookings
@@ -257,6 +276,7 @@ app.patch('/api/admin/bookings/:id', requireAdmin, async (req, res) => {
     }
 
     try {
+        await databaseReady;
         const [booking] = await sql`
             UPDATE bookings
             SET status = ${status}

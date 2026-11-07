@@ -30,7 +30,7 @@ Never put `DATABASE_URL` in browser JavaScript or commit `.env` to Git.
 The static website and admin page can be deployed to Vercel while the Express API runs on Render.
 
 1. Deploy this repository to Render as a Node web service using `npm start`.
-2. Set `DATABASE_URL`, `ADMIN_PASSWORD`, and `ADMIN_SESSION_SECRET` on Render. Run `npm run db:setup` once with the direct Neon URL, or run `db/schema.sql` in Neon.
+2. Set `DATABASE_URL`, `ADMIN_PASSWORD`, and `ADMIN_SESSION_SECRET` on Render. The API initializes the `bookings` table and index automatically on startup; you can also run `npm run db:setup` once with the direct Neon URL, or run `db/schema.sql` in Neon.
 3. Set Render `CORS_ORIGINS` to the exact Vercel production URL. Separate multiple URLs with commas for previews or custom domains.
 4. Keep Render `COOKIE_SECURE=true` so the cross-origin admin session cookie is accepted over HTTPS.
 5. Verify the Render deployment at `https://kalid-6r8l.onrender.com/api/health`.
