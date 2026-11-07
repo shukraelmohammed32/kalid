@@ -90,6 +90,7 @@ async function loadBookings() {
         });
         const result = await response.json().catch(() => ({}));
         if (response.status === 401) {
+            showFeedback(dashboardFeedback, 'Your admin session expired. Please sign in again.', true);
             showLogin();
             return;
         }

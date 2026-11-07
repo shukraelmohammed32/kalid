@@ -186,7 +186,11 @@ app.post('/api/admin/login', (req, res) => {
         return res.status(401).json({ ok: false, error: 'Incorrect admin password.' });
     }
 
-    const secureCookie = process.env.VERCEL || process.env.NODE_ENV === 'production';
+    const secureCookie = process.env.COOKIE_SECURE !== 'false'
+        && (process.env.VERCEL
+            || process.env.RENDER
+            || process.env.RENDER_EXTERNAL_URL
+            || process.env.NODE_ENV === 'production');
     const cookieParts = [
         `${adminCookieName}=${createAdminSession()}`,
         'HttpOnly',

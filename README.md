@@ -32,10 +32,11 @@ The static website and admin page can be deployed to Vercel while the Express AP
 1. Deploy this repository to Render as a Node web service using `npm start`.
 2. Set `DATABASE_URL`, `ADMIN_PASSWORD`, and `ADMIN_SESSION_SECRET` on Render. Run `npm run db:setup` once with the direct Neon URL, or run `db/schema.sql` in Neon.
 3. Set Render `CORS_ORIGINS` to the exact Vercel production URL. Separate multiple URLs with commas for previews or custom domains.
-4. Verify the Render deployment at `https://kalid-6r8l.onrender.com/api/health`.
-5. Import this repository into Vercel. It serves the static files in `public/`.
-6. Set Vercel `KALID_API_URL` to `https://kalid-6r8l.onrender.com` for documentation and deployment configuration. The committed `public/config.js` uses the same production value so the browser can call the Render API.
-7. Open the Vercel `/admin` URL to sign in and manage booking statuses.
+4. Keep Render `COOKIE_SECURE=true` so the cross-origin admin session cookie is accepted over HTTPS.
+5. Verify the Render deployment at `https://kalid-6r8l.onrender.com/api/health`.
+6. Import this repository into Vercel. It serves the static files in `public/`.
+7. Set Vercel `KALID_API_URL` to `https://kalid-6r8l.onrender.com` for documentation and deployment configuration. The committed `public/config.js` uses the same production value so the browser can call the Render API.
+8. Open the Vercel `/admin` URL to sign in and manage booking statuses.
 
 The `vercel.json` rewrite maps `/admin` and `/admin/` to the static `public/admin.html` page.
 
