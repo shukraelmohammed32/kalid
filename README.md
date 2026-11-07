@@ -37,4 +37,6 @@ The static website and admin page can be deployed to Vercel while the Express AP
 6. Set Vercel `KALID_API_URL` to `https://kalid-6r8l.onrender.com` for documentation and deployment configuration. The committed `public/config.js` uses the same production value so the browser can call the Render API.
 7. Open the Vercel `/admin` URL to sign in and manage booking statuses.
 
+The `vercel.json` rewrite maps `/admin` and `/admin/` to the static `public/admin.html` page.
+
 The browser sends admin requests with credentials. Render therefore uses an expiring, signed `SameSite=None; Secure` HttpOnly cookie and only allows origins listed in `CORS_ORIGINS`. The password and session secret stay server-side.
