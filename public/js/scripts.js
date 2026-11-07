@@ -134,7 +134,7 @@ window.addEventListener('DOMContentLoaded', event => {
             hideFeedback();
 
             try {
-                const response = await fetch(bookingForm.action, {
+                const response = await fetch(window.kalidApiUrl(bookingForm.getAttribute('action')), {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({

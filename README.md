@@ -25,19 +25,16 @@ The booking form saves the customer's name, phone, selected service, message, st
 
 Never put `DATABASE_URL` in browser JavaScript or commit `.env` to Git.
 
-## Deploy to Vercel with Neon
+## Deploy the Vercel frontend with the Render API
 
-This project is ready to deploy as an Express application on Vercel, with Neon providing PostgreSQL.
+The static website and admin page can be deployed to Vercel while the Express API runs on Render.
 
-1. Push the project to GitHub and import the repository into Vercel.
-2. In Vercel project settings, add `DATABASE_URL` using the pooled Neon connection string. Add `DATABASE_URL_UNPOOLED` only if you plan to run database setup from a deployment shell.
-3. Select Production and Preview for the environment variables, then redeploy.
-4. Run `npm run db:setup` once using the direct/unpooled connection string, or run the SQL in `db/schema.sql` from the Neon SQL Editor.
-5. Verify the deployment at `/api/health`; it should return `{ "ok": true }`.
+1. Deploy this repository to Render as a Node web service using `npm start`.
+2. Set `DATABASE_URL`, `ADMIN_PASSWORD`, and `ADMIN_SESSION_SECRET` on Render. Run `npm run db:setup` once with the direct Neon URL, or run `db/schema.sql` in Neon.
+3. Set Render `CORS_ORIGINS` to the exact Vercel production URL. Separate multiple URLs with commas for previews or custom domains.
+4. Verify the Render deployment at `https://kalid-6r8l.onrender.com/api/health`.
+5. Import this repository into Vercel. It serves the static files in `public/`.
+6. Set Vercel `KALID_API_URL` to `https://kalid-6r8l.onrender.com` for documentation and deployment configuration. The committed `public/config.js` uses the same production value so the browser can call the Render API.
+7. Open the Vercel `/admin` URL to sign in and manage booking statuses.
 
-6. Add `ADMIN_PASSWORD` and `ADMIN_SESSION_SECRET` to Vercel Production and Preview environment variables.
-7. Open `/admin` to sign in and manage booking statuses.
-
-Static website files are stored in `public/` because Vercel serves that directory through its CDN. `server.js` exports the Express app for Vercel and starts a local listener only when running `npm start` outside Vercel.
-
-The admin session is an expiring, signed HttpOnly cookie. The password and session secret stay server-side and are never sent to the browser.
+The browser sends admin requests with credentials. Render therefore uses an expiring, signed `SameSite=None; Secure` HttpOnly cookie and only allows origins listed in `CORS_ORIGINS`. The password and session secret stay server-side.
